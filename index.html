@@ -1,0 +1,290 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png">
+  <link rel="icon" type="image/png" sizes="32x32" href="/favicon-32x32.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="/favicon-16x16.png">
+  <link rel="manifest" href="/site.webmanifest">
+  <title>WinRaw - Converter Helper</title>
+  <style>
+    body {
+      background-color: #0d0d0d;
+      color: #e0e0e0;
+      font-family: monospace;
+      padding: 2rem;
+    }
+    h1, h2, h3 {
+      color: #00ffff;
+    }
+    .box {
+      background: #1a1a1a;
+      padding: 1rem;
+      border-radius: 8px;
+      margin-bottom: 2rem;
+    }
+    textarea {
+      width: 100%;
+      padding: 0.5rem;
+      margin: 0.5rem 0;
+      background: #1a1a1a;
+      color: #00ffcc;
+      border: 1px solid #444;
+      border-radius: 5px;
+      font-family: monospace;
+    }
+    button {
+      background: #00ffff;
+      color: #000;
+      padding: 0.5rem 1rem;
+      border: none;
+      border-radius: 5px;
+      font-weight: bold;
+      cursor: pointer;
+      margin-top: 1rem;
+    }
+  </style>
+</head>
+<body>
+  <h1>📅 Copia y pega despues...</h1>
+  <p>Aquí puedes guardar tus propios comandos, configuraciones favoritas, formatos o experimentos.  ¡Copia y pega lo que funcione bien y vuelve aquí cuando lo necesites! 🗘️</p>
+
+  <div class="box">
+    <h2>⬝ Tus configuraciones</h2>
+    <label>=== COMANDO FFMPEG ===</label>
+    <textarea id="cmdInput" rows="5"></textarea>
+    <label>=== NOTAS ===</label>
+    <textarea id="notesInput" rows="5"></textarea>
+    <label>=== ¿QUÉ HICISTE HOY? ===</label>
+    <textarea id="todayInput" rows="3"></textarea>
+    <button onclick="saveData()">💾 Guardar</button>
+  </div>
+
+  <div class="box">
+    <h2>📄 Tus datos guardados</h2>
+    <pre id="savedOutput">🕸️ Aún no has guardado nada...</pre>
+  </div>
+  <label>⚠ SI QUIERES ELIMINAR TU REGISTRO DE CODIGOS, NOTAS... SOLO DEBE DE BORRAR LAS COOKIES DE LA WEBlabel>
+  <hr>
+  <label>⚠ EL TEXTO QUE VA A VER A CONTINUACION SE ACTUALIZA DESDE UNA API QUE SE CONECTA A UN SERVIDOR. Y POR ESO PUEDE HABER ERRORES.
+  SI VE ALGUN ERROR CONTACTE EN EL REPOSITORIO OFICIAL DE GITHUB.</label>
+  <hr>
+
+  <div class="box">
+    <pre>
+___       ______       ________                  
+__ |     / /__(_)_________  __ \_____ ___      __
+__ | /| / /__  /__  __ \_  /_/ /  __ `/_ | /| / /
+__ |/ |/ / _  / _  / / /  _, _// /_/ /__ |/ |/ / 
+____/|__/  /_/  /_/ /_//_/ |_| \__,_/ ____/|__/  
+Ver: 3.7BETA12                                                
+=================================================
+             WinRaw - RAW VIDEO/AUDIO Converter
+       (Visualización de datos binarios)
+=================================================
+
+🎯 ¿Qué es WinRaw?
+
+WinRaw es una técnica para visualizar archivos binarios (`.win`, `.bin`, etc.) como si fueran video crudo (raw video), usando `ffmpeg`.
+También puedes escuchar los datos como si fueran audio, o incluso ambos a la vez si el archivo lo permite.
+> 💡 *¿Quién dijo que los archivos binarios no tienen alma?*
+
+Ideal para:
+- Experimentar con arte glitch / databending
+- Analizar archivos desconocidos
+- Creatividad audiovisual
+- Convertir cualqier cosa (pero literalmente cualquier cosa, si)
+> 🎨 *Sí, incluso ese save corrupto de 1998 puede renacer como video experimental en una galería de Berlín.*
+
+=============================
+📦 COMANDO BASE CON FFMPEG
+=============================
+
+ffmpeg -f u8 -ar 44100 -ac 2 -i data.win \
+       -f rawvideo -pix_fmt rgb555 -r 25 -s 42x42 -i data.win \
+       -vf scale=w=32*iw:h=32*ih:sws_flags=neighbor \
+       -b:v 50000k output.avi -y
+
+🔊 Entrada de audio: data.win, como unsigned 8-bit PCM
+
+🎥 Entrada de video: data.win, como rgb555
+
+🖼️ Resolución cruda: 42x42 (lo justo para ver pixeles felices)
+
+🔍 Escalado limpio: 32x usando neighbor (sin suavizado barato aquí)
+
+💾 Archivo de salida: output.avi (¡por el poder del AVI!)
+
+=======================
+🧩 PARÁMETROS CAMBIABLES
+=======================
+
+🎥 VIDEO
+
+| Parámetro        | Valores comunes                    | Descripción                                 |
+|------------------|-------------------------------------|---------------------------------------------|
+| -pix_fmt         | rgb555, rgb565, gray, rgb24         | Formato de píxel crudo                      |
+| -s               | 42x42, 64x64, 128x128               | Resolución original                         |
+| -r               | 25, 30, 60                          | Frames por segundo                          |
+| -vf scale        | scale=iw*X:ih*Y:sws_flags=neighbor | Escala final (X=2,4,8,16,32...)             |
+| -b:v             | 1000k, 5000k, 50000k                | Bitrate de salida (calidad del video) (ponle turbo o no)      |
+
+🔊 AUDIO
+
+| Parámetro        | Valores comunes        | Descripción                        |
+|------------------|------------------------|------------------------------------|
+| -f u8            | u8, s16le, f32le       | Formato crudo del audio            |
+| -ar              | 44100, 48000           | Sample rate                        |
+| -ac              | 1, 2                   | Número de canales (mono, estéreo)  |
+
+=======================
+🧩 EFECTOS DE TODO UN POCO
+=======================
+
+🎥 VIDEO
+
+| Parámetro        | Valores comunes                  | Descripción                                 |
+|------------------|----------------------------------|---------------------------------------------|
+| -vf "eq=contrast=1.5:brightness=0.1:saturation=2.0" | (Ninguna, ¿se entiende, verdad?) | Ajusta contraste, brillo y demas...|
+| -pix_fmt gray    | gray                             | Resolución en blanco y negro                         |
+
+🔊 AUDIO
+
+| Parámetro        | Valores comunes        | Descripción                        |
+|------------------|------------------------|------------------------------------|
+| -af "atempo=2.0" | 0.5, 1.0, 2.0...       | Modifica la velocidad del AUDIO    |
+| -af "aecho=0.8:0.9:1000:0.3"              | (No se puede modificar)            | Echo suave |
+
+====================
+🧪 EJEMPLOS ÚTILES
+====================
+
+🎥 Solo video, sin audio:
+ffmpeg -f rawvideo -pix_fmt rgb555 -s 64x64 -r 30 -i data.win \
+-vf scale=iw*16:ih*16:sws_flags=neighbor -b:v 2000k output.avi -y
+
+🤖 ¡Advertencia! Este comando puede causar nostalgia digital inmediata.
+
+🔊 Solo audio, sin video:
+ffmpeg -f u8 -ar 44100 -ac 1 -i data.win output.wav -y
+
+🔈 Suena como un modem enojado, pero más artístico.
+
+🔊🎥 Audio + video juntos:
+ffmpeg -f u8 -ar 44100 -ac 1 -i data.win \
+-f rawvideo -pix_fmt rgb555 -s 42x42 -r 25 -i data.win \
+-vf scale=iw*32:ih*32:sws_flags=neighbor -b:v 10000k output.avi -y
+
+🧪 Lo que sale de esto... depende del karma digital del archivo.
+
+🎞️ Cortar un fragmento:
+ffmpeg -ss 00:00:10 -t 5 -i output.avi corte.avi -y
+
+✂️ Sí, puedes cortar basura binaria en pedacitos hermosos.
+
+====================
+❓ PREGUNTAS FRECUENTES (FAQ)
+====================
+
+🔹 ¿Qué pasa si veo solo ruido?
+Es normal. Prueba con otro formato de píxeles o una resolución diferente.
+
+🔹 ¿Puedo usar otro archivo que no sea .win?
+Sí, cualquier archivo binario funciona: `.bin`, `.dat`, `.sav`, etc.  De hecho, prueba un .pdf. Te sorprenderías 👀
+
+🔹 ¿Por qué el video se ve pixelado?
+¡Esa es la idea! El escalado con `sws_flags=neighbor` mantiene el efecto retro/pixel art. No uses bilinear
+o bicubic si quieres mantenerlo crujiente como galletita glitch.
+
+🔹 ¿Puedo convertir a otros formatos como MP4 o GIF?
+Sí. Solo cambia la extensión de salida:
+- `output.mp4`
+- `output.gif`
+- `output.webm`
+
+🌀 GIFs glitch en bucle infinito... ¡bienvenidos al siglo XXI!
+
+🔹 ¿Puedo reproducir directamente sin guardar?
+Sí:
+```bash
+ffplay -f rawvideo -pix_fmt rgb555 -s 42x42 -i data.win
+
+🔹 ¿Cómo cambio el tamaño del video?
+Edita el filtro scale=iw*X:ih*Y, donde X e Y son multiplicadores.
+
+🔹 ¿Cómo agrego música encima?
+Usa otro archivo de audio con -i music.mp3 -shortest -map 0:v -map 1:a
+
+====================
+🛠️ TROUBLESHOOTING
+====================
+
+❌ El video no se genera
+✔️ Verifica que el archivo existe y tiene datos suficientes.
+
+❌ FFMPEG dice "invalid pixel format"
+✔️ Usa rgb24, gray, o prueba con ffmpeg -pix_fmts para ver los válidos.
+
+❌ El video dura muy poco o es negro
+✔️ Tal vez necesitas otra resolución o fps. Prueba valores mayores.
+
+❌ FFMPEG no está instalado
+✔️ Instálalo:
+
+    En Linux: sudo apt install ffmpeg
+
+    En macOS: brew install ffmpeg
+
+    En Windows: https://ffmpeg.org/download.html
+
+❌ Audio y video se ven desincronizados
+✔️ Lo más probable es que el archivo no tenga interleaving correcto.
+
+🛠️ Requisitos
+
+🔹 ffmpeg instalado
+
+🔹 Archivo binario con contenido suficiente (ideal >1MB)
+
+🔹 Curiosidad, creatividad, y tolerancia al caos digital 🧠
+
+🧿 Última palabra
+
+    Si un archivo binario cae en un bosque digital y nadie lo ve... ¿aún puede hacer glitch?
+    </pre>
+  </div>
+
+  <script>
+    function saveData() {
+      const cmd = document.getElementById('cmdInput').value;
+      const notes = document.getElementById('notesInput').value;
+      const today = document.getElementById('todayInput').value;
+
+      const data = {
+        cmd,
+        notes,
+        today
+      };
+
+      localStorage.setItem('winrawConfig', JSON.stringify(data));
+      showData();
+    }
+
+    function showData() {
+      const data = JSON.parse(localStorage.getItem('winrawConfig') || '{}');
+      const output = document.getElementById('savedOutput');
+
+      if (Object.keys(data).length === 0) {
+        output.textContent = '🕸️ Aún no has guardado nada...';
+      } else {
+        output.textContent = `=== COMANDO PERSONALIZADO ===\n${data.cmd || ''}
+\n=== NOTAS ===\n${data.notes || ''}
+\n=== ¿QUÉ HICISTE HOY? ===\n${data.today || ''}`;
+      }
+    }
+
+    window.onload = showData;
+  </script>
+</body>
+</html>
